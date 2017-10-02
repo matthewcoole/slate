@@ -2,7 +2,8 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - javascript
+  - http
+  - shell
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -22,7 +23,12 @@ For example to create a corpus named `mycorpus` just `POST` a JSON table descrip
 
 The JSON table description defines both the columns & column sets in the table;
 
-```javascript
+```http
+
+POST /mycorpus/create HTTP/1.1
+Host: localhost:1189
+Content-Type: application/json
+
 {
   "name": "tokens",
   "sets": [
@@ -36,13 +42,17 @@ The JSON table description defines both the columns & column sets in the table;
 }
 ```
 
+```shell
+curl -H "Content-Type: application/json" -X POST localhost:1189/mycorpus/create -d "$JSON"
+```
+
 This will create a table named `tokens` containing a single column set and a single column named `token`. The `type` property specifies that the data in the column set is zipfian in nature and the `"indexed": true` ensures an index is built on the column set.
 
 ## Command Line
 With the above config saved to the file `config.json` you can use `curl` to `POST` the request.
 
 ```
-curl -H "Content-Type: application/json" -X POST -d @config.json localhost:1189/mycorpus/create > response.json
+
 ```
 `response.json` will contain details as to if the corpus and table were created successfully.
 
