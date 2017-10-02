@@ -220,10 +220,15 @@
         <ul class="search-results"></ul>
       <div id="toc" class="toc-list-h1">
           <li>
-            <a href="#creating-a-table" class="toc-h1 toc-link" data-title="Creating a Table">Creating a Table</a>
-          </li>
-          <li>
-            <a href="#inserting-data" class="toc-h1 toc-link" data-title="Inserting Data">Inserting Data</a>
+            <a href="#creating-a-corpus" class="toc-h1 toc-link" data-title="Creating a Corpus">Creating a Corpus</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#creating-a-table" class="toc-h2 toc-link" data-title="Creating a Corpus">Creating a Table</a>
+                  </li>
+                  <li>
+                    <a href="#inserting-data" class="toc-h2 toc-link" data-title="Creating a Corpus">Inserting Data</a>
+                  </li>
+              </ul>
           </li>
           <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
@@ -237,13 +242,7 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id='creating-a-table'>Creating a Table</h1>
-<p>A corpus is created automatically when you create a new table. To create a table simply send a <code>POST</code> request to the path you would like your new corpus to have along with a JSON table description to create your first table. </p>
-
-<p>For example to create a corpus named <code>mycorpus</code> just <code>POST</code> a JSON table description to the URL <a href="http://localhost:1189/mycorpus/create">http://localhost:1189/mycorpus/create</a> .</p>
-
-<p>The JSON table description defines both the columns &amp; column sets in the table;</p>
-<pre class="highlight http tab-http"><code><span class="err">
+        <h1 id='creating-a-corpus'>Creating a Corpus</h1><h2 id='creating-a-table'>Creating a Table</h2><pre class="highlight http tab-http"><code><span class="err">
 </span><span class="nf">POST</span> <span class="nn">/mycorpus/create</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
@@ -277,10 +276,14 @@
 <span class="o">}</span>
 
 </code></pre>
+<p>A corpus is created automatically when you create a new table. To create a table simply send a <code>POST</code> request to the path you would like your new corpus to have along with a JSON table description to create your first table. </p>
+
+<p>For example to create a corpus named <code>mycorpus</code> just <code>POST</code> a JSON table description to the URL <a href="http://localhost:1189/mycorpus/create">http://localhost:1189/mycorpus/create</a> .</p>
+
+<p>The JSON table description defines both the columns &amp; column sets in the table;</p>
+
 <p>This will create a table named <code>tokens</code> containing a single column set and a single column named <code>token</code>. The <code>type</code> property specifies that the data in the column set is zipfian in nature and the <code>&quot;indexed&quot;: true</code> ensures an index is built on the column set.</p>
-<h1 id='inserting-data'>Inserting Data</h1>
-<p>Once you have created a table inserting data can be done by <code>POST</code>ing a <code>*.tsv</code> or <code>*.csv</code> file to the path of your destination table. Using our earlier example to add some data to our corpus we would post a file to; <a href="http://localhost:1189/mycorpus/tokens">http://localhost:1189/mycorpus/tokens</a> .</p>
-<pre class="highlight http tab-http"><code><span class="err">
+<h2 id='inserting-data'>Inserting Data</h2><pre class="highlight http tab-http"><code><span class="err">
 </span><span class="nf">POST</span> <span class="nn">/mycorpus/tokens</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">text/csv</span>
@@ -314,6 +317,8 @@ dog
 .
 
 </code></pre>
+<p>Once you have created a table inserting data can be done by <code>POST</code>ing a <code>*.tsv</code> or <code>*.csv</code> file to the path of your destination table. Using our earlier example to add some data to our corpus we would post a file to; <a href="http://localhost:1189/mycorpus/tokens">http://localhost:1189/mycorpus/tokens</a> .</p>
+
 <p>It is important that the contents of the <code>*.tsv</code> or <code>*.csv</code> contains a header line where the headers match precisely the names of the columns in the table you are trying to insert into (although the ordering of the columns is unimportant).</p>
 <h1 id='errors'>Errors</h1>
 <aside class="notice">This error section is stored in a separate file in `includes/_errors.md`. Slate allows you to optionally separate out your docs into many files...just save them to the `includes` folder and add them to the top of your `index.md`'s frontmatter. Files are included in the order listed.</aside>
