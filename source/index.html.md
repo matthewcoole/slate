@@ -2,9 +2,6 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
   - javascript
 
 toc_footers:
@@ -17,223 +14,62 @@ includes:
 search: true
 ---
 
-# Introduction
+# Creating a Table
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+A corpus is created automatically when you create a new table. To create a table simply send a `POST` request to the path you would like your new corpus to have along with a JSON table description to create your first table. 
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+For example to create a corpus named `mycorpus` just `POST` a JSON table description to the URL [http://localhost:1189/mycorpus/create](http://localhost:1189/mycorpus/create) .
 
-This example API documentation page was created with [Slate](https://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
-
-# Authentication
-
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
+The JSON table description defines both the columns & column sets in the table;
 
 ```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "name": "tokens",
+  "sets": [
+    {
+      "name": "text"
+      "type": "ZIPFIAN",
+      "indexed": true,
+      "columns": [{"name": "token"}]
+    }
+  ]
 }
 ```
 
-This endpoint retrieves a specific kitten.
+This will create a table named `tokens` containing a single column set and a single column named `token`. The `type` property specifies that the data in the column set is zipfian in nature and the `"indexed": true` ensures an index is built on the column set.
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+## Command Line
+With the above config saved to the file `config.json` you can use `curl` to `POST` the request.
 
-### HTTP Request
+```
+curl -H "Content-Type: application/json" -X POST -d @config.json localhost:1189/mycorpus/create > response.json
+```
+`response.json` will contain details as to if the corpus and table were created successfully.
 
-`GET http://example.com/kittens/<ID>`
+# Inserting Data
 
-### URL Parameters
+Once you have created a table inserting data can be done by `POST`ing a `*.tsv` or `*.csv` file to the path of your destination table. Using our earlier example to add some data to our corpus we would post a file to; [http://localhost:1189/mycorpus/tokens](http://localhost:1189/mycorpus/tokens) .
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
+```tsv
+token
+The
+quick
+brown
+fox
+jumped
+over
+the
+lazy
+dog
+.
 ```
 
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
+## Command Line
+To `POST` the file `text.tsv` to the table `mycorpus/tokens` you can use `curl`;
 ```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
+curl -X POST --data-binary @text.tsv localhost:1189/mycorpus/insert > response.json
 ```
+The response will be saved to `response.json` which will tell you if the operation was successful.
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
-```
-
-This endpoint retrieves a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
+It is important that the contents of the `*.tsv` or `*.csv` contains a header line where the headers match precisely the names of the columns in the table you are trying to insert into (although the ordering of the columns is unimportant).
 
