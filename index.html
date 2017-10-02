@@ -221,19 +221,9 @@
       <div id="toc" class="toc-list-h1">
           <li>
             <a href="#creating-a-table" class="toc-h1 toc-link" data-title="Creating a Table">Creating a Table</a>
-              <ul class="toc-list-h2">
-                  <li>
-                    <a href="#command-line" class="toc-h2 toc-link" data-title="Creating a Table">Command Line</a>
-                  </li>
-              </ul>
           </li>
           <li>
             <a href="#inserting-data" class="toc-h1 toc-link" data-title="Inserting Data">Inserting Data</a>
-              <ul class="toc-list-h2">
-                  <li>
-                    <a href="#command-line-2" class="toc-h2 toc-link" data-title="Inserting Data">Command Line</a>
-                  </li>
-              </ul>
           </li>
           <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
@@ -259,27 +249,43 @@
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
 <span class="p">{</span><span class="w">
-  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tokens"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"sets"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="err">name</span><span class="p">:</span><span class="w"> </span><span class="s2">"tokens"</span><span class="p">,</span><span class="w">
+  </span><span class="err">sets</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
     </span><span class="p">{</span><span class="w">
-      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"text"</span><span class="w">
-      </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ZIPFIAN"</span><span class="p">,</span><span class="w">
-      </span><span class="s2">"indexed"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-      </span><span class="s2">"columns"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"token"</span><span class="p">}]</span><span class="w">
+      </span><span class="err">name</span><span class="p">:</span><span class="w"> </span><span class="s2">"text"</span><span class="w">
+      </span><span class="err">type</span><span class="p">:</span><span class="w"> </span><span class="s2">"ZIPFIAN"</span><span class="p">,</span><span class="w">
+      </span><span class="err">indexed</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="err">columns</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="err">name</span><span class="p">:</span><span class="w"> </span><span class="s2">"token"</span><span class="p">}]</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre><pre class="highlight shell tab-shell"><code>curl -H <span class="s2">"Content-Type: application/json"</span> -X POST localhost:1189/mycorpus/create -d <span class="s2">"</span><span class="nv">$JSON</span><span class="s2">"</span>
+</span></code></pre><pre class="highlight shell tab-shell"><code>curl localhost:1189/mycorpus/create
+  -X POST
+  -H <span class="s2">"Content-Type: application/json"</span>
+  -d <span class="s2">"</span><span class="nv">$JSON</span><span class="s2">"</span>
+
+<span class="o">{</span>
+  name: <span class="s2">"tokens"</span>,
+  sets: <span class="o">[</span>
+    <span class="o">{</span>
+      name: <span class="s2">"text"</span>
+      <span class="nb">type</span>: <span class="s2">"ZIPFIAN"</span>,
+      indexed: <span class="nb">true</span>,
+      columns: <span class="o">[{</span>name: <span class="s2">"token"</span><span class="o">}]</span>
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+
 </code></pre>
 <p>This will create a table named <code>tokens</code> containing a single column set and a single column named <code>token</code>. The <code>type</code> property specifies that the data in the column set is zipfian in nature and the <code>&quot;indexed&quot;: true</code> ensures an index is built on the column set.</p>
-<h2 id='command-line'>Command Line</h2>
-<p>With the above config saved to the file <code>config.json</code> you can use <code>curl</code> to <code>POST</code> the request.</p>
-<pre class="highlight plaintext"><code>
-</code></pre>
-<p><code>response.json</code> will contain details as to if the corpus and table were created successfully.</p>
 <h1 id='inserting-data'>Inserting Data</h1>
 <p>Once you have created a table inserting data can be done by <code>POST</code>ing a <code>*.tsv</code> or <code>*.csv</code> file to the path of your destination table. Using our earlier example to add some data to our corpus we would post a file to; <a href="http://localhost:1189/mycorpus/tokens">http://localhost:1189/mycorpus/tokens</a> .</p>
-<pre class="highlight plaintext"><code>token
+<pre class="highlight http tab-http"><code><span class="err">
+</span><span class="nf">POST</span> <span class="nn">/mycorpus/tokens</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">text/csv</span>
+
+token
 The
 quick
 brown
@@ -290,13 +296,24 @@ the
 lazy
 dog
 .
-</code></pre><h2 id='command-line-2'>Command Line</h2>
-<p>To <code>POST</code> the file <code>text.tsv</code> to the table <code>mycorpus/tokens</code> you can use <code>curl</code>;
-<code>
-curl -X POST --data-binary @text.tsv localhost:1189/mycorpus/insert &gt; response.json
-</code>
-The response will be saved to <code>response.json</code> which will tell you if the operation was successful.</p>
+</code></pre><pre class="highlight shell tab-shell"><code>curl localhost:1189/mycorpus/tokens
+  -X POST
+  -H <span class="s2">"Content-Type: text/csv"</span>
+  -data-binary <span class="s2">"</span><span class="nv">$TSV</span><span class="s2">"</span>
 
+token
+The
+quick
+brown
+fox
+jumped
+over
+the
+lazy
+dog
+.
+
+</code></pre>
 <p>It is important that the contents of the <code>*.tsv</code> or <code>*.csv</code> contains a header line where the headers match precisely the names of the columns in the table you are trying to insert into (although the ordering of the columns is unimportant).</p>
 <h1 id='errors'>Errors</h1>
 <aside class="notice">This error section is stored in a separate file in `includes/_errors.md`. Slate allows you to optionally separate out your docs into many files...just save them to the `includes` folder and add them to the top of your `index.md`'s frontmatter. Files are included in the order listed.</aside>
