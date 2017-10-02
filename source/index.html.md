@@ -30,37 +30,50 @@ Host: localhost:1189
 Content-Type: application/json
 
 {
-  "name": "tokens",
-  "sets": [
+  name: "tokens",
+  sets: [
     {
-      "name": "text"
-      "type": "ZIPFIAN",
-      "indexed": true,
-      "columns": [{"name": "token"}]
+      name: "text"
+      type: "ZIPFIAN",
+      indexed: true,
+      columns: [{name: "token"}]
     }
   ]
 }
 ```
 
 ```shell
-curl -H "Content-Type: application/json" -X POST localhost:1189/mycorpus/create -d "$JSON"
+curl localhost:1189/mycorpus/create
+  -X POST
+  -H "Content-Type: application/json"
+  -d "$JSON"
+
+{
+  name: "tokens",
+  sets: [
+    {
+      name: "text"
+      type: "ZIPFIAN",
+      indexed: true,
+      columns: [{name: "token"}]
+    }
+  ]
+}
+
 ```
 
 This will create a table named `tokens` containing a single column set and a single column named `token`. The `type` property specifies that the data in the column set is zipfian in nature and the `"indexed": true` ensures an index is built on the column set.
-
-## Command Line
-With the above config saved to the file `config.json` you can use `curl` to `POST` the request.
-
-```
-
-```
-`response.json` will contain details as to if the corpus and table were created successfully.
 
 # Inserting Data
 
 Once you have created a table inserting data can be done by `POST`ing a `*.tsv` or `*.csv` file to the path of your destination table. Using our earlier example to add some data to our corpus we would post a file to; [http://localhost:1189/mycorpus/tokens](http://localhost:1189/mycorpus/tokens) .
 
-```tsv
+```http
+
+POST /mycorpus/tokens HTTP/1.1
+Host: localhost:1189
+Content-Type: text/csv
+
 token
 The
 quick
@@ -74,12 +87,24 @@ dog
 .
 ```
 
-## Command Line
-To `POST` the file `text.tsv` to the table `mycorpus/tokens` you can use `curl`;
+```shell
+curl localhost:1189/mycorpus/tokens
+  -X POST
+  -H "Content-Type: text/csv"
+  -data-binary "$TSV"
+
+token
+The
+quick
+brown
+fox
+jumped
+over
+the
+lazy
+dog
+.
+
 ```
-curl -X POST --data-binary @text.tsv localhost:1189/mycorpus/insert > response.json
-```
-The response will be saved to `response.json` which will tell you if the operation was successful.
 
 It is important that the contents of the `*.tsv` or `*.csv` contains a header line where the headers match precisely the names of the columns in the table you are trying to insert into (although the ordering of the columns is unimportant).
-
