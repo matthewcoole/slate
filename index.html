@@ -201,7 +201,7 @@
       <script src="javascripts/all.js"></script>
   </head>
 
-  <body class="index" data-languages="[&quot;http&quot;,&quot;shell&quot;]">
+  <body class="index" data-languages="[&quot;http&quot;,&quot;shell&quot;,&quot;ruby&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -213,6 +213,7 @@
         <div class="lang-selector">
               <a href="#" data-language-name="http">http</a>
               <a href="#" data-language-name="shell">shell</a>
+              <a href="#" data-language-name="ruby">ruby</a>
         </div>
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
@@ -235,39 +236,40 @@
               <ul class="toc-list-h2">
                   <li>
                     <a href="#api-usage" class="toc-h2 toc-link" data-title="Querying">API Usage</a>
-                      <ul class="toc-list-h3">
-                          <li>
-                            <a href="#command-line" class="toc-h3 toc-link" data-title="API Usage">Command Line</a>
-                          </li>
-                          <li>
-                            <a href="#result-types" class="toc-h3 toc-link" data-title="API Usage">Result Types</a>
-                          </li>
-                      </ul>
+                  </li>
+                  <li>
+                    <a href="#command-line" class="toc-h2 toc-link" data-title="Querying">Command Line</a>
                   </li>
                   <li>
                     <a href="#simple-queries" class="toc-h2 toc-link" data-title="Querying">Simple Queries</a>
-                      <ul class="toc-list-h3">
-                          <li>
-                            <a href="#basics" class="toc-h3 toc-link" data-title="Simple Queries">Basics</a>
-                          </li>
-                          <li>
-                            <a href="#phrases" class="toc-h3 toc-link" data-title="Simple Queries">Phrases</a>
-                          </li>
-                          <li>
-                            <a href="#regular-expressions" class="toc-h3 toc-link" data-title="Simple Queries">Regular Expressions</a>
-                          </li>
-                      </ul>
                   </li>
                   <li>
-                    <a href="#query-defaults" class="toc-h2 toc-link" data-title="Querying">Query Defaults</a>
-                      <ul class="toc-list-h3">
-                          <li>
-                            <a href="#relative-position" class="toc-h3 toc-link" data-title="Query Defaults">Relative Position</a>
-                          </li>
-                          <li>
-                            <a href="#distribute" class="toc-h3 toc-link" data-title="Query Defaults">Distribute</a>
-                          </li>
-                      </ul>
+                    <a href="#phrases" class="toc-h2 toc-link" data-title="Querying">Phrases</a>
+                  </li>
+                  <li>
+                    <a href="#regular-expressions" class="toc-h2 toc-link" data-title="Querying">Regular Expressions</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#result-types" class="toc-h1 toc-link" data-title="Result Types">Result Types</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#kwic" class="toc-h2 toc-link" data-title="Result Types">KWIC</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#hidden-query-properties" class="toc-h1 toc-link" data-title="Hidden Query Properties">Hidden Query Properties</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#relative-position" class="toc-h2 toc-link" data-title="Hidden Query Properties">Relative Position</a>
+                  </li>
+                  <li>
+                    <a href="#range-values" class="toc-h2 toc-link" data-title="Hidden Query Properties">Range Values</a>
+                  </li>
+                  <li>
+                    <a href="#distribute" class="toc-h2 toc-link" data-title="Hidden Query Properties">Distribute</a>
                   </li>
               </ul>
           </li>
@@ -311,6 +313,25 @@
     <span class="o">}</span>
   <span class="o">]</span>
 <span class="o">}</span>
+</code></pre><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'net/http'</span>
+<span class="nb">require</span> <span class="s1">'json'</span>
+
+<span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="s1">'localhost:1189/mycorpus/create'</span><span class="p">)</span>
+<span class="n">req</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Post</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="s1">'Content-Type'</span> <span class="o">=&gt;</span> <span class="s1">'application/json'</span><span class="p">)</span>
+<span class="n">req</span><span class="p">.</span><span class="nf">body</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"tokens"</span><span class="p">,</span>
+  <span class="s2">"sets"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"text"</span>
+      <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"ZIPFIAN"</span><span class="p">,</span>
+      <span class="s2">"indexed"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
+      <span class="s2">"columns"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"token"</span><span class="p">}]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}.</span><span class="nf">to_json</span>
+<span class="n">res</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="p">.</span><span class="nf">start</span><span class="p">(</span><span class="n">uri</span><span class="p">.</span><span class="nf">hostname</span><span class="p">,</span> <span class="n">uri</span><span class="p">.</span><span class="nf">port</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">http</span><span class="o">|</span>
+  <span class="n">http</span><span class="p">.</span><span class="nf">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+<span class="k">end</span>
 </code></pre>
 <p>A corpus is created automatically when you create a new table. To create a table simply send a <code>POST</code> request to the path you would like your new corpus to have along with a JSON table description to create your first table. </p>
 
@@ -383,42 +404,11 @@ dog
 <p>A <code>GET</code> request can be made to the endpoint <a href="http://localhost:1189/api/query">http://localhost:1189/sample/query</a>. The body of the request should be in the form of a JSON query.</p>
 
 <p>This will send a <code>query</code> request to the <code>sample</code> corpus.</p>
-<h3 id='command-line'>Command Line</h3>
+<h2 id='command-line'>Command Line</h2>
 <p>Requests can be made from the command line using <code>curl</code>.</p>
 
 <p><em>Review <a href="https://curl.haxx.se/docs/">cURL documentation</a> for more info.</em></p>
-<h3 id='result-types'>Result Types</h3>
-<p>There are 4 primary result types supported;</p>
-
-<table><thead>
-<tr>
-<th>ID</th>
-<th>Description</th>
-<th>Params</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>kwic</td>
-<td>Keyword-in-Context - The results of the query will be returned as a set of concordance lines.</td>
-<td>context</td>
-</tr>
-<tr>
-<td>col</td>
-<td>Collocation - Returns a statistics frame of the terms surrounding the query.</td>
-<td>context</td>
-</tr>
-<tr>
-<td>ngram</td>
-<td>NGram - Builds a frequency list of the Ngrams that contain the query term.</td>
-<td>n</td>
-</tr>
-<tr>
-<td>list</td>
-<td>Frequency List - Generates a frequency list of terms that match the query.</td>
-<td></td>
-</tr>
-</tbody></table>
-<h2 id='simple-queries'>Simple Queries</h2><h3 id='basics'>Basics</h3><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<h2 id='simple-queries'>Simple Queries</h2><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
@@ -445,7 +435,7 @@ dog
 <span class="o">}</span>
 </code></pre>
 <p>To query use the QBE (Query By Example) JSON syntax. This will query the <code>&quot;tokens&quot;</code> table and the <code>&quot;pos&quot;</code> (part-of-speech) column for the value <code>&quot;ADJ&quot;</code> and return the results in the form of a <code>&quot;kwic&quot;</code> (keyword in context).</p>
-<h3 id='phrases'>Phrases</h3><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<h2 id='phrases'>Phrases</h2><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
@@ -476,7 +466,7 @@ dog
 <span class="o">}</span>
 </code></pre>
 <p>A sequence of tokens or phrase can be searched for by specifying additional objects in the query array example for a given table e.g. to query for the phrase &quot;out of time&quot; as it appears in its original form.</p>
-<h3 id='regular-expressions'>Regular Expressions</h3><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<h2 id='regular-expressions'>Regular Expressions</h2><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
@@ -507,7 +497,58 @@ dog
 <p>Values within queries can be expressed as regular expressions (using the <a href="http://www.brics.dk/automaton/doc/index.html?dk/brics/automaton/RegExp.html">automaton syntax</a>);</p>
 
 <p>This example query would match against any of <code>star</code>, <code>staring</code>, <code>starred</code>, <code>start</code>, <code>starting</code> etc.</p>
-<h2 id='query-defaults'>Query Defaults</h2><h3 id='relative-position'>Relative Position</h3><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<h1 id='result-types'>Result Types</h1>
+<p>There are 4 primary result types supported;</p>
+
+<table><thead>
+<tr>
+<th>ID</th>
+<th>Description</th>
+<th>Params</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>kwic</td>
+<td>Keyword-in-Context - The results of the query will be returned as a set of concordance lines.</td>
+<td>context</td>
+</tr>
+<tr>
+<td>col</td>
+<td>Collocation - Returns a statistics frame of the terms surrounding the query.</td>
+<td>context</td>
+</tr>
+<tr>
+<td>ngram</td>
+<td>NGram - Builds a frequency list of the Ngrams that contain the query term.</td>
+<td>n</td>
+</tr>
+<tr>
+<td>list</td>
+<td>Frequency List - Generates a frequency list of terms that match the query.</td>
+<td></td>
+</tr>
+</tbody></table>
+
+<p>All results are automatically paged with details of the page provided in the resulting JSON object.</p>
+<h2 id='kwic'>KWIC</h2><pre class="highlight http tab-http"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"concordances"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">[{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"but"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"the"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"apple"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fell"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"to"</span><span class="p">},</span><span class="w"> </span><span class="p">],</span><span class="w">
+    </span><span class="p">[{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"big"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"red"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"apple"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"."</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"I"</span><span class="p">},</span><span class="w"> </span><span class="p">],</span><span class="w">
+    </span><span class="p">[{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"and"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"an"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"apple"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sat"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"on"</span><span class="p">},</span><span class="w"> </span><span class="p">],</span><span class="w">
+    </span><span class="p">[{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"orange"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">","</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"apple"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">","</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pear"</span><span class="p">},</span><span class="w"> </span><span class="p">],</span><span class="w">
+    </span><span class="p">[{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"the"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"poison"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"apple"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"caused"</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"her"</span><span class="p">},</span><span class="w"> </span><span class="p">]</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"page"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"pages"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"results"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"resultsPerPage"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>KWIC (Keyword-in-Context) queries return their results as a list of concordance lines.</p>
+<h1 id='hidden-query-properties'>Hidden Query Properties</h1><h2 id='relative-position'>Relative Position</h2><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
@@ -538,7 +579,7 @@ dog
 <span class="o">}</span>
 </code></pre>
 <p>Many objects in the query syntax have properties that default to particular values if omitted from the query. For example, the QBE array specified for a table contains the hidden property; relative position <code>&quot;rp&quot;</code> which defaults to a sequential increment within the array i.e. the previous query would have the relative position properties default to;</p>
-<pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<h2 id='range-values'>Range Values</h2><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
@@ -571,7 +612,7 @@ dog
 <p>This query would search for the string &quot;white&quot; in its original form in the tokens table and the string &quot;rabbit&quot; in its original form up to 2 positions before or after. </p>
 
 <p>The same query could be expressed less elegantly using a list of values; <code>{&quot;token&quot;: &quot;rabbit&quot;, &quot;rp&quot;: &quot;-2, -1, 0, 1, 2&quot;}</code>. Obviously here the position 0 is superfluous as it would be in the same position as the previous token but this kind of thing can still be done if you were searching on another column.</p>
-<h3 id='distribute'>Distribute</h3><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<h2 id='distribute'>Distribute</h2><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
@@ -606,6 +647,7 @@ dog
           <div class="lang-selector">
                 <a href="#" data-language-name="http">http</a>
                 <a href="#" data-language-name="shell">shell</a>
+                <a href="#" data-language-name="ruby">ruby</a>
           </div>
       </div>
     </div>
