@@ -4,6 +4,7 @@ title: API Reference
 language_tabs: # must be one of https://git.io/vQNgJ
   - http
   - shell
+  - ruby
 
 toc_footers:
   - <a href='#'>Sign Up for a Developer Key</a>
@@ -12,6 +13,8 @@ toc_footers:
 includes:
   - create
   - query
+  - results
+  - props
 
 search: true
 ---

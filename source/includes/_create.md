@@ -39,6 +39,28 @@ curl localhost:1189/mycorpus/create
 }
 ```
 
+```ruby
+require 'net/http'
+require 'json'
+
+uri = URI('localhost:1189/mycorpus/create')
+req = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
+req.body = {
+  "name": "tokens",
+  "sets": [
+    {
+      "name": "text"
+      "type": "ZIPFIAN",
+      "indexed": true,
+      "columns": [{"name": "token"}]
+    }
+  ]
+}.to_json
+res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+  http.request(req)
+end
+```
+
 A corpus is created automatically when you create a new table. To create a table simply send a `POST` request to the path you would like your new corpus to have along with a JSON table description to create your first table. 
 
 For example to create a corpus named `mycorpus` just `POST` a JSON table description to the URL [http://localhost:1189/mycorpus/create](http://localhost:1189/mycorpus/create) .
