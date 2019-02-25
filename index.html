@@ -229,6 +229,9 @@
                   <li>
                     <a href="#inserting-data" class="toc-h2 toc-link" data-title="Creating a Corpus">Inserting Data</a>
                   </li>
+                  <li>
+                    <a href="#multiple-inserts" class="toc-h2 toc-link" data-title="Creating a Corpus">Multiple inserts</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -297,42 +300,7 @@
     </span><span class="p">}</span><span class="w">
   </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre><pre class="highlight shell tab-shell"><code>curl localhost:1189/mycorpus/create
-  -X POST
-  -H <span class="s2">"Content-Type: application/json"</span>
-  -d <span class="s2">"</span><span class="nv">$JSON</span><span class="s2">"</span>
-
-<span class="o">{</span>
-  <span class="s2">"name"</span>: <span class="s2">"tokens"</span>,
-  <span class="s2">"sets"</span>: <span class="o">[</span>
-    <span class="o">{</span>
-      <span class="s2">"name"</span>: <span class="s2">"text"</span>
-      <span class="s2">"type"</span>: <span class="s2">"ZIPFIAN"</span>,
-      <span class="s2">"indexed"</span>: <span class="nb">true</span>,
-      <span class="s2">"columns"</span>: <span class="o">[{</span><span class="s2">"name"</span>: <span class="s2">"token"</span><span class="o">}]</span>
-    <span class="o">}</span>
-  <span class="o">]</span>
-<span class="o">}</span>
-</code></pre><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'net/http'</span>
-<span class="nb">require</span> <span class="s1">'json'</span>
-
-<span class="n">uri</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="s1">'localhost:1189/mycorpus/create'</span><span class="p">)</span>
-<span class="n">req</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Post</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="s1">'Content-Type'</span> <span class="o">=&gt;</span> <span class="s1">'application/json'</span><span class="p">)</span>
-<span class="n">req</span><span class="p">.</span><span class="nf">body</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"tokens"</span><span class="p">,</span>
-  <span class="s2">"sets"</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"text"</span>
-      <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"ZIPFIAN"</span><span class="p">,</span>
-      <span class="s2">"indexed"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
-      <span class="s2">"columns"</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"token"</span><span class="p">}]</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}.</span><span class="nf">to_json</span>
-<span class="n">res</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="p">.</span><span class="nf">start</span><span class="p">(</span><span class="n">uri</span><span class="p">.</span><span class="nf">hostname</span><span class="p">,</span> <span class="n">uri</span><span class="p">.</span><span class="nf">port</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">http</span><span class="o">|</span>
-  <span class="n">http</span><span class="p">.</span><span class="nf">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
-<span class="k">end</span>
-</code></pre>
+</span></code></pre>
 <p>A corpus is created automatically when you create a new table. To create a table simply send a <code>POST</code> request to the path you would like your new corpus to have along with a JSON table description to create your first table. </p>
 
 <p>For example to create a corpus named <code>mycorpus</code> just <code>POST</code> a JSON table description to the URL <a href="http://localhost:1189/mycorpus/create">http://localhost:1189/mycorpus/create</a> .</p>
@@ -340,25 +308,9 @@
 <p>The JSON table description defines both the columns &amp; column sets in the table;</p>
 
 <p>This will create a table named <code>tokens</code> containing a single column set and a single column named <code>token</code>. The <code>type</code> property specifies that the data in the column set is zipfian in nature and the <code>&quot;indexed&quot;: true</code> ensures an index is built on the column set.</p>
-<h2 id='inserting-data'>Inserting Data</h2><pre class="highlight http tab-http"><code><span class="nf">POST</span> <span class="nn">/mycorpus/tokens</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<h2 id='inserting-data'>Inserting Data</h2><pre class="highlight http tab-http"><code><span class="nf">POST</span> <span class="nn">/mycorpus/tokens/insert</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">text/csv</span>
-
-token
-The
-quick
-brown
-fox
-jumped
-over
-the
-lazy
-dog
-.
-</code></pre><pre class="highlight shell tab-shell"><code>curl localhost:1189/mycorpus/tokens
-  -X POST
-  -H <span class="s2">"Content-Type: text/csv"</span>
-  -data-binary <span class="s2">"</span><span class="nv">$TSV</span><span class="s2">"</span>
 
 token
 The
@@ -375,7 +327,29 @@ dog
 <p>Once you have created a table inserting data can be done by <code>POST</code>ing a <code>*.tsv</code> or <code>*.csv</code> file to the path of your destination table. Using our earlier example to add some data to our corpus we would post a file to; <a href="http://localhost:1189/mycorpus/tokens">http://localhost:1189/mycorpus/tokens</a> .</p>
 
 <p>It is important that the contents of the <code>*.tsv</code> or <code>*.csv</code> contains a header line where the headers match precisely the names of the columns in the table you are trying to insert into (although the ordering of the columns is unimportant).</p>
-<h1 id='querying'>Querying</h1><h2 id='api-usage'>API Usage</h2><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<h2 id='multiple-inserts'>Multiple inserts</h2>
+<p>When inserting data to lexiDB the database will automatically commit everything in the transferred CSV/TSV file and index it. To insert multiple CSV/TSV files you must include the query param <code>commit=false</code>. This will prevent lexiDB from indexing so you can insert multiple files into the same table. When inserting the final file simply remove the query param or use <code>commit=true</code></p>
+<pre class="highlight http tab-http"><code><span class="nf">POST</span> <span class="nn">/mycorpus/tokens/insert?commit=false</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">text/csv</span>
+
+token
+The
+quick
+brown
+fox
+</code></pre><pre class="highlight http tab-http"><code><span class="nf">POST</span> <span class="nn">/mycorpus/tokens/insert?commit=true</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">text/csv</span>
+
+token
+jumped
+over
+the
+lazy
+dog
+.
+</code></pre><h1 id='querying'>Querying</h1><h2 id='api-usage'>API Usage</h2><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
 
