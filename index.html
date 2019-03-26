@@ -252,6 +252,9 @@
                   <li>
                     <a href="#regular-expressions" class="toc-h2 toc-link" data-title="Querying">Regular Expressions</a>
                   </li>
+                  <li>
+                    <a href="#joins" class="toc-h2 toc-link" data-title="Querying">Joins</a>
+                  </li>
               </ul>
           </li>
           <li>
@@ -471,6 +474,29 @@ dog
 <p>Values within queries can be expressed as regular expressions (using the <a href="http://www.brics.dk/automaton/doc/index.html?dk/brics/automaton/RegExp.html">automaton syntax</a>);</p>
 
 <p>This example query would match against any of <code>star</code>, <code>staring</code>, <code>starred</code>, <code>start</code>, <code>starting</code> etc.</p>
+<h2 id='joins'>Joins</h2><pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/mycorpus/query</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">localhost:1189</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"query"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"tokens"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="s2">"texts"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">".*"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"join"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tid"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>To perform a join (inner-join) simply add two QBE queries to the <code>query</code> element (in this case querying the <code>tokens</code> and <code>texts</code> table) and specify which column on which to join in the <code>result</code> element; <code>&quot;join&quot;: &quot;tid&quot;</code>.  </p>
 <h1 id='result-types'>Result Types</h1>
 <p>There are 4 primary result types supported;</p>
 
