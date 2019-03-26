@@ -155,3 +155,31 @@ LexiDB incorporates [dk.brics.automaton](http://www.brics.dk/automaton/) for res
 Values within queries can be expressed as regular expressions (using the [automaton syntax](http://www.brics.dk/automaton/doc/index.html?dk/brics/automaton/RegExp.html));
 
 This example query would match against any of `star`, `staring`, `starred`, `start`, `starting` etc.
+
+## Joins
+
+```http
+GET /mycorpus/query HTTP/1.1
+Host: localhost:1189
+Content-Type: application/json
+
+{
+  "query": {
+    "tokens": [
+      {
+        "token": "The"
+      }
+    ],
+    "texts": [
+      {
+        "title": ".*"
+      }
+    ]
+  },
+  "result": {
+    "join": "tid"
+  }
+}
+```
+
+To perform a join (inner-join) simply add two QBE queries to the `query` element (in this case querying the `tokens` and `texts` table) and specify which column on which to join in the `result` element; `"join": "tid"`.  
